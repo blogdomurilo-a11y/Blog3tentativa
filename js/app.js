@@ -55,13 +55,14 @@ if (page === "post") {
     .then(([l, md]) => {
       const m = l.find(p => p.slug === slug) || { title: slug, date: "2000-01-01" };
       document.title = `${m.title} | ${S.title}`;
+      const corpo = md.replace(/\r\n/g, "\n").replace(/^---\n[\s\S]*?\n---\s*/, ""); // tira o cabeçalho
       box.innerHTML = `
         <header class="post-head">
           <p class="meta">${m.category || "Diário"}, ${fmt(m.date)}</p>
           <h1>${m.title}</h1>${m.subtitle ? `<p class="lead">${m.subtitle}</p>` : ""}
         </header>
         ${m.cover ? `<img class="post-cover" src="${m.cover}" alt="${m.cover_alt || m.title}">` : ""}
-        <div class="prose">${window.marked ? marked.parse(md) : "<pre>" + md + "</pre>"}</div>
+        <div class="prose">${window.marked ? marked.parse(corpo) : "<pre>" + corpo + "</pre>"}</div>
         <p class="back"><a href="index.html">Voltar para os textos</a></p>`;
     }).catch(() => box.innerHTML = `<p class="notice">Texto não encontrado.</p>`);
 }
